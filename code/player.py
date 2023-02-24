@@ -4,7 +4,7 @@ from support import import_folder
 from entity import Entity
 
 class Player(Entity):
-	def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_magic):
+	def __init__(self,pos,groups,obstacle_sprites,create_attack,destroy_attack,create_magic,get_map_time):
 		super().__init__(groups)
 		self.image = pygame.image.load('../graphics/test/player.png').convert_alpha()
 		self.rect = self.image.get_rect(topleft = pos)
@@ -17,7 +17,7 @@ class Player(Entity):
 		# movement 
 		self.attacking = False
 		self.attack_cooldown = 400
-		self.attack_time = None
+		self.attack_time = 0
 		self.obstacle_sprites = obstacle_sprites
 
 		# weapon
@@ -53,6 +53,8 @@ class Player(Entity):
 		# import a sound
 		self.weapon_attack_sound = pygame.mixer.Sound('../audio/sword.wav')
 		self.weapon_attack_sound.set_volume(0.4)
+
+		self.get_map_time = get_map_time
 
 	def import_player_assets(self):
 		character_path = '../graphics/player/'
@@ -96,15 +98,12 @@ class Player(Entity):
 	def input_ctrl(self, keys):
 		# attack input 
 		if keys[pygame.K_z]:
-			self.attacking = True
-			self.attack_time = pygame.time.get_ticks()
-			self.create_attack()
-			self.weapon_attack_sound.play()
+			self.start_attack()
 
 		# magic input 
 		if keys[pygame.K_x]:
 			self.attacking = True
-			self.attack_time = pygame.time.get_ticks()
+			self.attack_time = self.get_map_time()
 			style = list(magic_data.keys())[self.magic_index]
 			strength = list(magic_data.values())[self.magic_index]['strength'] + self.stats['magic']
 			cost = list(magic_data.values())[self.magic_index]['cost']
@@ -152,8 +151,7 @@ class Player(Entity):
 				self.status = self.status.replace('_attack','')
 
 	def cooldowns(self):
-		current_time = pygame.time.get_ticks()
-
+		current_time = self.get_map_time()
 		if self.attacking:
 			if current_time - self.attack_time >= self.attack_cooldown + weapon_data[self.weapon]['cooldown']:
 				self.attacking = False
@@ -218,3 +216,9 @@ class Player(Entity):
 		self.get_status()
 		self.animate()
 		self.energy_recovery()
+
+	def start_attack(self):
+		self.attacking = True
+		self.attack_time = self.get_map_time()
+		self.create_attack()
+		self.weapon_attack_sound.play()

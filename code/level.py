@@ -12,12 +12,19 @@ from particles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
 
+from npc import NPC
+from dialog import Dialog
+from input import Input
+from action import action
+
 class Level:
 	def __init__(self):
+		self.map_time = 0
+		self.map_clock = pygame.time.Clock()
 
 		# get the display surface 
 		self.display_surface = pygame.display.get_surface()
-		self.game_paused = False
+		self.game_status = "map"
 
 		# sprite group setup
 		self.visible_sprites = YSortCameraGroup()
@@ -25,8 +32,16 @@ class Level:
 
 		# attack sprites
 		self.current_attack = None
+		self.need_check_npc = None
 		self.attack_sprites = pygame.sprite.Group()
 		self.attackable_sprites = pygame.sprite.Group()
+		self.npc_sprites = pygame.sprite.Group()
+
+		
+		self.dialog = Dialog(self.change_game_status)
+		self.input = Input(self.change_game_status)
+
+		self.action = action(self.dialog.setup_text, self.change_game_status)
 
 		# sprite setup
 		self.create_map()
@@ -79,7 +94,14 @@ class Level:
 									self.obstacle_sprites,
 									self.create_attack,
 									self.destroy_attack,
-									self.create_magic)
+									self.create_magic,
+									self.get_map_time)
+							elif col == '395':
+								NPC(
+									(x,y),
+									[self.visible_sprites, self.npc_sprites],
+									col,
+									self.action)
 							else:
 								if col == '390': monster_name = 'bamboo'
 								elif col == '391': monster_name = 'spirit'
@@ -97,6 +119,7 @@ class Level:
 	def create_attack(self):
 		
 		self.current_attack = Weapon(self.player,[self.visible_sprites,self.attack_sprites])
+		self.need_check_npc = True
 
 	def create_magic(self,style,strength,cost):
 		if style == 'heal':
@@ -124,6 +147,15 @@ class Level:
 							target_sprite.kill()
 						else:
 							target_sprite.get_damage(self.player,attack_sprite.sprite_type)
+				
+			if self.need_check_npc:
+				for attack_sprite in self.attack_sprites:
+					collision_sprites = pygame.sprite.spritecollide(attack_sprite,self.npc_sprites,False)
+					if collision_sprites:
+						for target_sprite in collision_sprites:
+							target_sprite.action(self.player)
+					
+				self.need_check_npc = False
 
 	def damage_player(self,amount,attack_type):
 		if self.player.vulnerable:
@@ -140,20 +172,36 @@ class Level:
 
 		self.player.exp += amount
 
-	def toggle_menu(self):
+	def change_game_status(self, status = 'map'):
+		self.game_status = status
 
-		self.game_paused = not self.game_paused 
+	def quit():
+		pass
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
 		self.ui.display(self.player)
-		
-		if self.game_paused:
-			self.upgrade.display()
-		else:
+		clock = self.map_clock.tick()
+
+		if self.game_status == "action":
+			self.action.process()
+
+		if self.game_status == "map":
+			self.map_time += clock
+
 			self.visible_sprites.update()
 			self.visible_sprites.enemy_update(self.player)
 			self.player_attack_logic()
+		else:
+			if self.game_status == "upgrade":
+				self.upgrade.display()
+			elif self.game_status == "dialog":
+				self.dialog.display()
+			elif self.game_status == "input":
+				self.input.display()
+
+	def get_map_time(self):
+		return self.map_time
 		
 
 class YSortCameraGroup(pygame.sprite.Group):
