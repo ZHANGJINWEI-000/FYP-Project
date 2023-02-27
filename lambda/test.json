@@ -1,0 +1,95 @@
+{
+  "sessionId": "529165268700769",
+  "inputTranscript": "learn",
+  "interpretations": [
+    {
+      "nluConfidence": 1.0,
+      "intent": {
+        "confirmationState": "null",
+        "name": "learnCode",
+        "state": "InProgress",
+        "slots": {
+          "b": null,
+          "c": null,
+          "learncodename": null
+        }
+      }
+    },
+    {
+      "intent": {
+        "confirmationState": "null",
+        "name": "FallbackIntent",
+        "state": "InProgress",
+        "slots": {}
+      }
+    },
+    {
+      "nluConfidence": 0.36,
+      "intent": {
+        "confirmationState": "null",
+        "name": "MakeAppointment",
+        "state": "InProgress",
+        "slots": {
+          "AppointmentType": null,
+          "Time": null,
+          "Date": null
+        }
+      }
+    }
+  ],
+  "proposedNextState": {
+    "dialogAction": {
+      "slotToElicit": "learncodename",
+      "type": "ElicitSlot"
+    },
+    "prompt": {
+      "attempt": "Initial"
+    },
+    "intent": {
+      "confirmationState": "null",
+      "name": "learnCode",
+      "state": "InProgress",
+      "slots": {
+        "b": null,
+        "c": null,
+        "learncodename": null
+      }
+    }
+  },
+  "responseContentType": "text/plain; charset=utf-8",
+  "sessionState": {
+    "sessionAttributes": {},
+    "originatingRequestId": "90ea6a0e-1235-44fe-bcb0-60c2c93d4a20",
+    "intent": {
+      "confirmationState": "null",
+      "name": "learnCode",
+      "state": "InProgress",
+      "slots": {
+        "b": null,
+        "c": null,
+        "learncodename": null
+      }
+    }
+  },
+  "invocationSource": "DialogCodeHook",
+  "messageVersion": "1.0",
+  "transcriptions": [
+    {
+      "resolvedContext": {
+        "intent": "learnCode"
+      },
+      "transcription": "learn",
+      "resolvedSlots": {},
+      "transcriptionConfidence": 1.0
+    }
+  ],
+  "bot": {
+    "aliasId": "TSTALIASID",
+    "aliasName": "TestBotAlias",
+    "name": "FYPpygameLex",
+    "version": "DRAFT",
+    "localeId": "en_US",
+    "id": "UKYYFAVJIB"
+  },
+  "inputMode": "Text"
+}
