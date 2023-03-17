@@ -1,0 +1,1 @@
+{"name":"confirm","identifier":"PPTLBQHDGW","description":null,"slotTypeValues":[{"synonyms":null,"sampleValue":{"value":"yes"}},{"synonyms":null,"sampleValue":{"value":"no"}},{"synonyms":null,"sampleValue":{"value":"maybe"}}],"parentSlotTypeSignature":null,"valueSelectionSetting":{"resolutionStrategy":"ORIGINAL_VALUE","regexFilter":null}}

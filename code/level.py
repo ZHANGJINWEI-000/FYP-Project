@@ -12,10 +12,13 @@ from particles import AnimationPlayer
 from magic import MagicPlayer
 from upgrade import Upgrade
 
+from status import gameStatus
 from npc import NPC
 from dialog import Dialog
 from input import Input
 from action import action
+
+from lex import Lex
 
 class Level:
 	def __init__(self):
@@ -24,7 +27,7 @@ class Level:
 
 		# get the display surface 
 		self.display_surface = pygame.display.get_surface()
-		self.game_status = "map"
+		self.game_status = gameStatus()
 
 		# sprite group setup
 		self.visible_sprites = YSortCameraGroup()
@@ -38,10 +41,11 @@ class Level:
 		self.npc_sprites = pygame.sprite.Group()
 
 		
-		self.dialog = Dialog(self.change_game_status)
-		self.input = Input(self.change_game_status)
+		self.dialog = Dialog(self.game_status)
+		self.input = Input(self.game_status)
+		self.lex = Lex(self.game_status, self.dialog.action, self.input.action)
 
-		self.action = action(self.dialog.setup_text, self.change_game_status)
+		self.action = action(self.game_status, self.dialog.action, self.input.action, self.lex.setup)
 
 		# sprite setup
 		self.create_map()
@@ -53,6 +57,7 @@ class Level:
 		# particles
 		self.animation_player = AnimationPlayer()
 		self.magic_player = MagicPlayer(self.animation_player)
+
 
 	def create_map(self):
 		layouts = {
@@ -96,7 +101,7 @@ class Level:
 									self.destroy_attack,
 									self.create_magic,
 									self.get_map_time)
-							elif col == '395':
+							elif col == '395' or col == '396':
 								NPC(
 									(x,y),
 									[self.visible_sprites, self.npc_sprites],
@@ -172,33 +177,32 @@ class Level:
 
 		self.player.exp += amount
 
-	def change_game_status(self, status = 'map'):
+	def game_status(self, status = 'action'):
 		self.game_status = status
-
-	def quit():
-		pass
 
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
 		self.ui.display(self.player)
 		clock = self.map_clock.tick()
 
-		if self.game_status == "action":
-			self.action.process()
+		if self.game_status.exist("action"):
+				self.action.process()
 
-		if self.game_status == "map":
+		if self.game_status.exist("map"):
 			self.map_time += clock
 
 			self.visible_sprites.update()
 			self.visible_sprites.enemy_update(self.player)
 			self.player_attack_logic()
 		else:
-			if self.game_status == "upgrade":
+			if self.game_status.exist("lex"):
+				self.lex.update()
+			if self.game_status.exist("upgrade"):
 				self.upgrade.display()
-			elif self.game_status == "dialog":
-				self.dialog.display()
-			elif self.game_status == "input":
-				self.input.display()
+			if self.game_status.exist("dialog"):
+				self.dialog.update()
+			if self.game_status.exist("input"):
+				self.input.update()
 
 	def get_map_time(self):
 		return self.map_time

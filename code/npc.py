@@ -27,17 +27,9 @@ class NPC(Entity):
 			full_path = character_path + animation
 			self.animations[animation] = import_folder(full_path)
 	
-	def action(self, player):
-		print(player.status, self.status)
-		if "left" in player.status:
-			self.status = "right"
-		elif "right" in player.status:
-			self.status = "left"
-		elif "down" in player.status:
-			self.status = "up"
-		else:
-			self.status = "down"
-		self.image = self.animations[self.status][0]
+	def action(self, char):
+		print(char.status, self.status)
+		self.turnof(char.status)
 		
 		self.actionA.get_list(self.data["action"])
 
@@ -52,6 +44,18 @@ class NPC(Entity):
 		# set the image
 		self.image = animation[int(self.frame_index)]
 		self.rect = self.image.get_rect(center = self.hitbox.center)
+
+	def turnof(self, direction):
+		if "left" in direction:
+			self.status = "right"
+		elif "right" in direction:
+			self.status = "left"
+		elif "down" in direction:
+			self.status = "up"
+		else:
+			self.status = "down"
+		self.image = self.animations[self.status][0]
+
 
 	def update(self):
 		pass

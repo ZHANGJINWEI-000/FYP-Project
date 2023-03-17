@@ -1,3 +1,7 @@
+BOTID = 'UKYYFAVJIB'
+BOTALIASID = 'TSTALIASID'
+LOCALID = 'en_US'
+
 # game setup
 WIDTH    = 1280	
 HEIGTH   = 720
@@ -55,8 +59,19 @@ monster_data = {
 	'bamboo': {'health': 70,'exp':120,'damage':6,'attack_type': 'leaf_attack', 'attack_sound':'../audio/attack/slash.wav', 'speed': 3, 'resistance': 3, 'attack_radius': 50, 'notice_radius': 300}}
 
 npc_data = {
-	'395': {"image":"player","action":[
-		{"type":"text","content":["""player:hi!""","""NPC:What can i help for you!""","""Player:I want to learn aws""","""NPC:https://aws.amazon.com"""]},
-		{"type":"input"}	
-	]}
+	'395': {
+		"image": "player",
+		"action": [
+			{"type":"text", "content": [{"text":"hi!","char_name":"player"},{"text":"What can i help for you!","char_name":"NPC"}]},
+			{"type":"text", "content": [{"text":"I want to learn aws","char_name":"player"},{"text":"https://aws.amazon.com","char_name":"NPC"}]},
+			{"type":"input", "content": None}	
+		]
+	},
+	'396': {
+		"image": "player",
+		"action": [
+			{"type": "lex"}
+
+		]
+	}
 }
