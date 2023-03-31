@@ -51,7 +51,7 @@ class textBox:
 
 	def display_text(self):
 		text_rect = self.rect.copy()
-		text_rect = text_rect.move(UI_FONT_SIZE, 0)
+		text_rect = text_rect.move(UI_FONT_SIZE, -UI_FONT_SIZE / 2)
 		
 		text_list = self.text.split("\n")
 
@@ -61,15 +61,15 @@ class textBox:
 			text_surf = self.font.render(text, False, self.color)
 			self.display_surface.blit(text_surf,text_rect)
 
-			text_rect = text_rect.move(UI_FONT_SIZE / 2, UI_FONT_SIZE / 2)
+			text_rect = text_rect.move(UI_FONT_SIZE / 2, 0)
 
 		for text in text_list:
-			text_rect = text_rect.move(0, UI_FONT_SIZE)
+			text_rect = text_rect.move(0, UI_FONT_SIZE * 3 / 2)
 			text_surf = self.font.render(text, False, self.color)
 
 			# draw 
 			self.display_surface.blit(text_surf,text_rect)
 
 	def quit(self):
-		if not self.game_status.exist("lex"):
-			self.game_status.add("action")
+		if not self.game_status.exist("action"):
+			self.game_status.add("implement")

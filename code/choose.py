@@ -62,7 +62,7 @@ class Dialog:
 
 			self.display_text(self.display_surface,text)
 		else:
-			self.game_status.add("action")
+			self.game_status.add("implement")
 
 	def display_text(self,surface,text):
 		color = TEXT_COLOR

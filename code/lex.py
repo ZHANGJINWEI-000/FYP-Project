@@ -7,7 +7,7 @@ class Lex():
         #self.client = boto3.client('lexv2-runtime')
         self.resetInputText()
 
-        self.messages = []
+        self.dialogAction = ""
 
         self.dialog_action = dialog_action
         self.input_action = input_action
@@ -25,8 +25,10 @@ class Lex():
         self.localeId = localeId if localeId else LOCALID
         self.setSessionId(sessionId)
         self.game_status.add("lex")
+        self.game_status.add("action")
 
-    def getMessage(self, text):
+    def getResponse(self, text = None):
+        text = text if text else self.inputText
         client = boto3.client('lexv2-runtime')
 
         response = client.recognize_text(
@@ -37,8 +39,11 @@ class Lex():
         text=text)
 
         print(response)
+        return response
+
+    def getMessage(self, json):
         try:
-            return response["messages"]
+            return json["messages"]
         except:
             return []
     
@@ -52,27 +57,33 @@ class Lex():
     def update(self):
         if self.game_status.exist("inchat"):
             return True
+        if self.dialogAction == "Close":
+            self.quit()
+            return True
         if self.inputText:
-            self.messages = self.getMessage(self.inputText)
+            response = self.getResponse()
+            messages = self.getMessage(response)
+            self.dialogAction = response["sessionState"]["dialogAction"]["type"]
+            print(messages, self.dialogAction)
             self.resetInputText()
-            if len(self.messages):
-                content = self.convertToDialog()
+            if len(messages):
+                content = self.convertToDialog(messages)
                 self.dialog_action("setup", content)
-                self.messages = []
-            else:
-                self.quit()
         elif self.game_status.exist("entered"):
             inputText = self.input_action("gettext")
             self.setInputText(inputText)
         elif not self.game_status.exist("input"):
             self.input_action("setup")
 
-    def convertToDialog(self):
+    def convertToDialog(self, messages):
         content = []
-        for message in self.messages:
-            content.append({"text":message["content"]})
+        text = ""
+        for message in messages:
+            text += message["content"] + "\n"
+        content.append({"text":text[:-1]})
         return content
     
     def quit(self):
         self.game_status.remove("lex")
-        self.game_status.add("action")
+        self.game_status.remove("action")
+        self.game_status.add("implement")

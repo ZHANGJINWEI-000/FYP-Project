@@ -1,7 +1,7 @@
 class action:
-    def __init__(self, game_status, dialog_action, input_action, setup_lex):
-        self.type = ["text", "input", "lex", "close"]
-        self.action = [self.dialog, self.input, self.lex, self.close]
+    def __init__(self, game_status, dialog_action, input_action, setup_lex, setup_audio):
+        self.type = ["text", "input", "lex", "audio", "close"]
+        self.action = [self.dialog, self.input, self.lex, self.audio, self.close]
         self.list = []
         self.index = 0
 
@@ -9,12 +9,13 @@ class action:
         self.dialog_action = dialog_action
         self.input_action = input_action
         self.setup_lex = setup_lex
+        self.setup_audio = setup_audio
 
     def get_list(self, list):
         if list and len(list) > 0:
             self.list = list
             self.index = 0
-            self.game_status.change("action")
+            self.game_status.change("implement")
 
     def process(self):
         if self.index == len(self.list):
@@ -31,7 +32,13 @@ class action:
             self.action[ti](content)
 
         self.index += 1
-        self.game_status.remove("action")
+        self.game_status.remove("implement")
+
+    def finish(self):
+        if not self.game_status.exist("action"):
+            self.index += 1
+            if self.index == len(self.list):
+                self.quit()
 
     def quit(self):
         self.game_status.change("map")
@@ -54,6 +61,9 @@ class action:
     """
     def lex(self, content = None):
         self.setup_lex()
+
+    def audio(self, content = None):
+        self.setup_audio()
 
     """
     """

@@ -62,6 +62,7 @@ npc_data = {
 	'395': {
 		"image": "player",
 		"action": [
+			{"type":"text", "content": [{"text":"1\n2\n3\n4"},{"text":"1\n2\n3\n4\n5"},{"text":"1\n2\n3\n4","char_name":"abc"},{"text":"1\n2\n3\n4\n5","char_name":"abc"}]},
 			{"type":"text", "content": [{"text":"hi!","char_name":"player"},{"text":"What can i help for you!","char_name":"NPC"}]},
 			{"type":"text", "content": [{"text":"I want to learn aws","char_name":"player"},{"text":"https://aws.amazon.com","char_name":"NPC"}]},
 			{"type":"input", "content": None}	
@@ -71,7 +72,12 @@ npc_data = {
 		"image": "player",
 		"action": [
 			{"type": "lex"}
-
+		]
+	},
+    '397': {
+		"image": "player",
+        "action": [
+			{"type": "audio"}
 		]
 	}
 }

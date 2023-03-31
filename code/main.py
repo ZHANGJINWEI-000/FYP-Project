@@ -13,10 +13,11 @@ class Game:
 
 		self.level = Level()
 
+		pygame.mixer.init(frequency=16000, channels=1, buffer=1024)
 		# sound 
-		main_sound = pygame.mixer.Sound('../audio/main.ogg')
-		main_sound.set_volume(0)#.5)
-		main_sound.play(loops = -1)
+		#main_sound = pygame.mixer.Sound('../audio/main.ogg')
+		#main_sound.set_volume(0.5)
+		#main_sound.play(loops = -1)
 	
 	def run(self):
 		while True:

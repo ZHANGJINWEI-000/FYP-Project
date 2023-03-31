@@ -13,7 +13,7 @@ class gameStatus():
         if self.exist(status):
             self.status.remove(status)
         if not len(self.status):
-            self.change("action")
+            self.change("implement")
     
     def exist(self, status):
         return status in self.status

@@ -19,6 +19,7 @@ from input import Input
 from action import action
 
 from lex import Lex
+from audio import Audio
 
 class Level:
 	def __init__(self):
@@ -44,8 +45,9 @@ class Level:
 		self.dialog = Dialog(self.game_status)
 		self.input = Input(self.game_status)
 		self.lex = Lex(self.game_status, self.dialog.action, self.input.action)
+		self.audio = Audio(self.game_status)
 
-		self.action = action(self.game_status, self.dialog.action, self.input.action, self.lex.setup)
+		self.action = action(self.game_status, self.dialog.action, self.input.action, self.lex.setup, self.audio.setup)
 
 		# sprite setup
 		self.create_map()
@@ -101,7 +103,7 @@ class Level:
 									self.destroy_attack,
 									self.create_magic,
 									self.get_map_time)
-							elif col == '395' or col == '396':
+							elif col in ['395','396','397']:
 								NPC(
 									(x,y),
 									[self.visible_sprites, self.npc_sprites],
@@ -177,15 +179,12 @@ class Level:
 
 		self.player.exp += amount
 
-	def game_status(self, status = 'action'):
-		self.game_status = status
-
 	def run(self):
 		self.visible_sprites.custom_draw(self.player)
 		self.ui.display(self.player)
 		clock = self.map_clock.tick()
 
-		if self.game_status.exist("action"):
+		if self.game_status.exist("implement"):
 				self.action.process()
 
 		if self.game_status.exist("map"):
@@ -197,6 +196,8 @@ class Level:
 		else:
 			if self.game_status.exist("lex"):
 				self.lex.update()
+			if self.game_status.exist("audio"):
+				self.audio.update()
 			if self.game_status.exist("upgrade"):
 				self.upgrade.display()
 			if self.game_status.exist("dialog"):
