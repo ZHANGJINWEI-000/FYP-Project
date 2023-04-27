@@ -24,6 +24,8 @@ class Lex():
         self.botAliasId = botAliasId if botAliasId else BOTALIASID
         self.localeId = localeId if localeId else LOCALID
         self.setSessionId(sessionId)
+        
+        self.dialogAction = ""
         self.game_status.add("lex")
         self.game_status.add("action")
 
